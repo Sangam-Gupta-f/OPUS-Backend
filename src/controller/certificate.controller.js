@@ -34,6 +34,9 @@ export const createCertificate = async (req, res) => {
 
     // generate qr
     const qrCode = await generateQRCode(verificationUrl);
+    if (!qrCode) {
+      return res.status(500).json({ message: "Error generating QR code" });
+    }
 
     // generate pdf
     const pdfBuffer = await generateCertificatePDF({
@@ -50,6 +53,7 @@ export const createCertificate = async (req, res) => {
         .status(500)
         .json({ message: "Error generating certificate PDF" });
     }
+    console.log("PDF buffer generated successfully");
 
     // save certificate
     const certificate = new Certificate({
@@ -73,7 +77,13 @@ export const createCertificate = async (req, res) => {
 
     return res.send(pdfBuffer);
   } catch (error) {
-    res.status(500).json({ message: "Error creating certificate", error });
+    console.error("CREATE CERTIFICATE ERROR:", error);
+
+    return res.status(500).json({
+      message: "Error creating certificate",
+      error: error.message,
+      stack: error.stack,
+    });
   }
 };
 
