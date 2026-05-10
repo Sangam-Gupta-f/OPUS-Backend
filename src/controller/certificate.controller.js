@@ -30,7 +30,7 @@ export const createCertificate = async (req, res) => {
       return res.status(400).json({ message: "Certificate ID already exists" });
     }
     // verification url
-    const verificationUrl = `${process.env.FRONTEND_URL}/certificate/${certificateId}`;
+    const verificationUrl = `${process.env.FRONTEND_URL}/verify/${certificateId}`;
 
     // generate qr
     const qrCode = await generateQRCode(verificationUrl);
