@@ -1,0 +1,16 @@
+# create .gitignore
+# Ignore node_modules
+node_modules/
+# Ignore environment variables
+.env
+# Ignore logs
+logs/
+*.log
+# Ignore build files
+dist/
+build/
+# Ignore coverage reports
+coverage/
+# Ignore OS files
+.DS_Store
+Thumbs.db
