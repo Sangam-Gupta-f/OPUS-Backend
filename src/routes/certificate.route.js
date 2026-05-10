@@ -5,7 +5,7 @@ import {
   getCertificateById,
   downloadCertificate,
 } from "../controller/certificate.controller.js";
-import authMiddleware from "../middleware/auth.Middleware.js";
+import authMiddleware from "../middleware/auth.middleware.js";
 import authorize from "../middleware/authorized.middleware.js";
 
 const router = Router();
