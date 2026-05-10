@@ -1,5 +1,10 @@
 import { Router } from "express";
-import { createCertificate } from "../controller/certificate.controller.js";
+import {
+  createCertificate,
+  getAllCertificates,
+  getCertificateById,
+  downloadCertificate,
+} from "../controller/certificate.controller.js";
 import authMiddleware from "../middleware/auth.Middleware.js";
 import authorize from "../middleware/authorized.middleware.js";
 
@@ -12,5 +17,13 @@ router.post(
   authorize(["admin"]),
   createCertificate,
 );
+// Route to get all certificates
+router.get("/", authMiddleware, authorize(["admin"]), getAllCertificates);
+
+// Route to get a certificate by ID
+router.get("/:id", getCertificateById);
+
+// Route to download certificate PDF
+router.get("/:id/download", downloadCertificate);
 
 export default router;

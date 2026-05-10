@@ -2,10 +2,6 @@
 import mongoose from "mongoose";
 const certificateSchema = new mongoose.Schema(
   {
-    certificateName: {
-      type: String,
-      required: true,
-    },
     certificateId: {
       type: String,
       required: true,
@@ -30,6 +26,12 @@ const certificateSchema = new mongoose.Schema(
     },
     qrCode: {
       type: String,
+    },
+    internshipStartDate: {
+      type: Date,
+    },
+    internshipEndDate: {
+      type: Date,
     },
   },
   { timestamps: true },
