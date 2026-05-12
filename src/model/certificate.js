@@ -7,6 +7,14 @@ const certificateSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    enrollmentNumber: {
+      type: String,
+      required: true,
+    },
+    rollNumber: {
+      type: String,
+      required: true,
+    },
     name: {
       type: String,
       required: true,
@@ -18,8 +26,11 @@ const certificateSchema = new mongoose.Schema(
       type: Date,
       default: Date.now,
     },
-    expiryDate: {
-      type: Date,
+    course: {
+      type: String,
+    },
+    semester: {
+      type: String,
     },
     verificationUrl: {
       type: String,

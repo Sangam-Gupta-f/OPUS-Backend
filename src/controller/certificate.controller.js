@@ -6,17 +6,23 @@ export const createCertificate = async (req, res) => {
   try {
     const {
       certificateId,
+      enrollmentNumber,
+      rollNumber,
+      course,
+      semester,
       name,
       faterName,
       issuedDate,
-      expiryDate,
       internshipStartDate,
       internshipEndDate,
     } = req.body;
     if (
       !certificateId ||
+      !enrollmentNumber ||
+      !rollNumber ||
+      !course ||
+      !semester ||
       !name ||
-      !expiryDate ||
       !internshipStartDate ||
       !internshipEndDate
     ) {
@@ -39,29 +45,32 @@ export const createCertificate = async (req, res) => {
     }
 
     // generate pdf
-    const pdfBuffer = await generateCertificatePDF({
-      certificateId,
-      name,
-      faterName,
-      issuedDate,
-      qrCode,
-      internshipStartDate,
-      internshipEndDate,
-    });
-    if (!pdfBuffer) {
-      return res
-        .status(500)
-        .json({ message: "Error generating certificate PDF" });
-    }
-    console.log("PDF buffer generated successfully");
+    // const pdfBuffer = await generateCertificatePDF({
+    //   certificateId,
+    //   name,
+    //   faterName,
+    //   issuedDate,
+    //   qrCode,
+    //   internshipStartDate,
+    //   internshipEndDate,
+    // });
+    // if (!pdfBuffer) {
+    //   return res
+    //     .status(500)
+    //     .json({ message: "Error generating certificate PDF" });
+    // }
+    // console.log("PDF buffer generated successfully");
 
     // save certificate
     const certificate = new Certificate({
       certificateId,
+      enrollmentNumber,
+      rollNumber,
+      course,
+      semester,
       name,
       faterName,
       issuedDate,
-      expiryDate,
       qrCode,
       verificationUrl,
       internshipStartDate,
@@ -69,13 +78,16 @@ export const createCertificate = async (req, res) => {
     });
     await certificate.save();
 
-    res.set({
-      "Content-Type": "application/pdf",
+    // res.set({
+    //   "Content-Type": "application/pdf",
 
-      "Content-Disposition": `attachment; filename=${certificateId}.pdf`,
+    //   "Content-Disposition": `attachment; filename=${certificateId}.pdf`,
+    // });
+
+    return res.status(201).json({
+      message: "Certificate created successfully",
+      certificate,
     });
-
-    return res.send(pdfBuffer);
   } catch (error) {
     console.error("CREATE CERTIFICATE ERROR:", error);
 
@@ -126,7 +138,7 @@ export const deleteCertificate = async (req, res) => {
       return res.status(400).json({ message: "Certificate ID is required" });
     }
     const certificate = await Certificate.findOneAndDelete({
-      certificateId: id,
+      _id: id,
     });
     if (!certificate) {
       return res.status(404).json({ message: "Certificate not found" });
