@@ -6,29 +6,22 @@ export const createCertificate = async (req, res) => {
   try {
     const {
       certificateId,
-      enrollmentNumber,
-      rollNumber,
-      course,
-      semester,
       name,
-      faterName,
+      fatherName,
       issuedDate,
       internshipStartDate,
       internshipEndDate,
+      collegeName,
     } = req.body;
     if (
       !certificateId ||
-      !enrollmentNumber ||
-      !rollNumber ||
-      !course ||
-      !semester ||
       !name ||
       !internshipStartDate ||
-      !internshipEndDate
+      !internshipEndDate ||
+      !collegeName
     ) {
       return res.status(400).json({
-        message:
-          "Certificate name, certificate ID, name, and expiry date are required",
+        message: "Certificate name, certificate ID, name, are required",
       });
     }
     const existingCertificate = await Certificate.findOne({ certificateId });
@@ -44,45 +37,21 @@ export const createCertificate = async (req, res) => {
       return res.status(500).json({ message: "Error generating QR code" });
     }
 
-    // generate pdf
-    // const pdfBuffer = await generateCertificatePDF({
-    //   certificateId,
-    //   name,
-    //   faterName,
-    //   issuedDate,
-    //   qrCode,
-    //   internshipStartDate,
-    //   internshipEndDate,
-    // });
-    // if (!pdfBuffer) {
-    //   return res
-    //     .status(500)
-    //     .json({ message: "Error generating certificate PDF" });
-    // }
-    // console.log("PDF buffer generated successfully");
-
-    // save certificate
     const certificate = new Certificate({
       certificateId,
-      enrollmentNumber,
-      rollNumber,
-      course,
-      semester,
       name,
-      faterName,
+      fatherName,
       issuedDate,
       qrCode,
       verificationUrl,
       internshipStartDate,
       internshipEndDate,
+      collegeName,
+      timing: `8 AM - 12 PM`,
+      shedule: `3 Hours Daily`,
+      internshipHours: 120,
     });
     await certificate.save();
-
-    // res.set({
-    //   "Content-Type": "application/pdf",
-
-    //   "Content-Disposition": `attachment; filename=${certificateId}.pdf`,
-    // });
 
     return res.status(201).json({
       message: "Certificate created successfully",
@@ -102,12 +71,56 @@ export const createCertificate = async (req, res) => {
 // get all certificates
 export const getAllCertificates = async (req, res) => {
   try {
+    const { page, limit } = req.query;
+    const pageNumber = parseInt(page) || 1;
+    const pageSize = parseInt(limit) || 10;
+    const skip = (pageNumber - 1) * pageSize;
+    const totalCertificates = await Certificate.countDocuments();
+    const totalPages = Math.ceil(totalCertificates / pageSize);
     const certificates = await Certificate.find()
       .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(pageSize)
       .exec();
-    res.status(200).json(certificates);
+    res.status(200).json({
+      data: certificates,
+      pagination: {
+        currentPage: pageNumber,
+        pageSize,
+        totalCertificates,
+        totalPages,
+      },
+    });
   } catch (error) {
     res.status(500).json({ message: "Error fetching certificates", error });
+  }
+};
+
+export const getAllStudents = async (req, res) => {
+  try {
+    const { page, limit } = req.query;
+    const pageNumber = parseInt(page) || 1;
+    const pageSize = parseInt(limit) || 10;
+    const skip = (pageNumber - 1) * pageSize;
+    const totalStudents = await Certificate.countDocuments();
+    const totalPages = Math.ceil(totalStudents / pageSize);
+    const students = await Certificate.find()
+      .select("name certificateId fatherName collegeName")
+      .sort({ createdAt: -1 })
+      .skip(skip)
+      .limit(pageSize)
+      .exec();
+    res.status(200).json({
+      data: students,
+      pagination: {
+        currentPage: pageNumber,
+        pageSize,
+        totalStudents,
+        totalPages,
+      },
+    });
+  } catch (error) {
+    res.status(500).json({ message: "Error fetching students", error });
   }
 };
 

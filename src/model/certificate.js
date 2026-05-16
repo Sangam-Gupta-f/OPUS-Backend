@@ -7,30 +7,16 @@ const certificateSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
-    enrollmentNumber: {
-      type: String,
-      required: true,
-    },
-    rollNumber: {
-      type: String,
-      required: true,
-    },
     name: {
       type: String,
       required: true,
     },
-    faterName: {
+    fatherName: {
       type: String,
     },
     issuedDate: {
       type: Date,
       default: Date.now,
-    },
-    course: {
-      type: String,
-    },
-    semester: {
-      type: String,
     },
     verificationUrl: {
       type: String,
@@ -43,6 +29,18 @@ const certificateSchema = new mongoose.Schema(
     },
     internshipEndDate: {
       type: Date,
+    },
+    collegeName: {
+      type: String,
+    },
+    timing: {
+      type: String,
+    },
+    shedule: {
+      type: String,
+    },
+    internshipHours: {
+      type: Number,
     },
   },
   { timestamps: true },

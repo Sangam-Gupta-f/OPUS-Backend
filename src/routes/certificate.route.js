@@ -5,6 +5,7 @@ import {
   getCertificateById,
   downloadCertificate,
   deleteCertificate,
+  getAllStudents,
 } from "../controller/certificate.controller.js";
 import authMiddleware from "../middleware/auth.middleware.js";
 import authorize from "../middleware/authorized.middleware.js";
@@ -21,6 +22,8 @@ router.post(
 // Route to get all certificates
 router.get("/", authMiddleware, authorize(["admin"]), getAllCertificates);
 
+// get all students
+router.get("/students", getAllStudents);
 // Route to get a certificate by ID
 router.get("/:id", getCertificateById);
 
