@@ -6,6 +6,8 @@ export const createCertificate = async (req, res) => {
   try {
     const {
       certificateId,
+      enrollmentNumber,
+      rollNumber,
       name,
       fatherName,
       issuedDate,
@@ -16,12 +18,15 @@ export const createCertificate = async (req, res) => {
     if (
       !certificateId ||
       !name ||
+      !enrollmentNumber ||
+      !rollNumber ||
       !internshipStartDate ||
       !internshipEndDate ||
       !collegeName
     ) {
       return res.status(400).json({
-        message: "Certificate name, certificate ID, name, are required",
+        message:
+          "Certificate name, certificate ID, enrollment number, roll number, internship start date, internship end date, and college name are required",
       });
     }
     const existingCertificate = await Certificate.findOne({ certificateId });
@@ -39,6 +44,8 @@ export const createCertificate = async (req, res) => {
 
     const certificate = new Certificate({
       certificateId,
+      enrollmentNumber,
+      rollNumber,
       name,
       fatherName,
       issuedDate,
@@ -47,8 +54,8 @@ export const createCertificate = async (req, res) => {
       internshipStartDate,
       internshipEndDate,
       collegeName,
-      timing: `8 AM - 12 PM`,
-      shedule: `3 Hours Daily`,
+      timing: `7 AM - 1 PM`,
+      shedule: `6 Hours Daily`,
       internshipHours: 120,
     });
     await certificate.save();

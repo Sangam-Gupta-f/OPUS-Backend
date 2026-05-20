@@ -7,6 +7,12 @@ const certificateSchema = new mongoose.Schema(
       required: true,
       unique: true,
     },
+    enrollmentNumber: {
+      type: String,
+    },
+    rollNumber: {
+      type: String,
+    },
     name: {
       type: String,
       required: true,
